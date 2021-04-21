@@ -21,7 +21,7 @@ app.post('/todos', function (request, response) {
     text: request.body.text.trim(),
     completed: request.body.completed.trim()
   }
-  response.redirect('/todos/' + toString(todosNum))
+  response.redirect('/todos/' + todosNum)
   todosNum = todosNum + 1
 })
 
@@ -58,12 +58,6 @@ app.put('/todos/:id', function (request, response) {
   response.redirect('/todos/' + request.params.id)
 })
 
-app.use(function (request, response, next) {
-  response.status(404).json({
-    message: request.url + ' not found'
-  })
-})
-
 app.get('/todos/:id', function (request, response) {
   if (!todos[request.params.id]) {
     response.status(404).json({
@@ -73,6 +67,12 @@ app.get('/todos/:id', function (request, response) {
   }
   console.log(todos[request.params.id])
   response.json(todos[request.params.id])
+})
+
+app.use(function (request, response, next) {
+  response.status(404).json({
+    message: request.url + ' not found'
+  })
 })
 
 app.listen(port)

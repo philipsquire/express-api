@@ -16,10 +16,6 @@ app.get('/todos', function (request, response) {
   response.json(todos)
 })
 
-app.get('/todos/:id', function (request, response) {
-  response.json(todos[request.params.id])
-})
-
 app.post('/todos', function (request, response) {
   todos[todosNum] = {
     text: request.body.text.trim(),
@@ -30,9 +26,14 @@ app.post('/todos', function (request, response) {
 })
 
 app.delete('/todos/:id', function (request, response) {
+  if (!todos[request.params.id]) {
+    response.status(404).json({
+      message: 'sorry, no such ToDo: ' + request.params.id
+    })
+    return
+  }
   if (todosNum > 1) {
     delete todos[request.params.id]
-    todosNum = todosNum - 1
   } else {
     todos = {}
     todosNum = 0
@@ -41,6 +42,12 @@ app.delete('/todos/:id', function (request, response) {
 })
 
 app.put('/todos/:id', function (request, response) {
+  if (!todos[request.params.id]) {
+    response.status(404).json({
+      message: 'sorry, no such ToDo: ' + request.params.id
+    })
+    return
+  }
   const todo = todos[request.params.id]
   if (request.body.text !== undefined) {
     todo.text = request.body.text.trim()
